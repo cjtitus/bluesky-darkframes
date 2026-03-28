@@ -105,8 +105,11 @@ class SnapshotDevice(Device):
             elif name == "datum":
                 new_doc = doc.copy()
                 old_resource_uid = doc["resource"]
-                new_resource_uid = resources[old_resource_uid]
-                new_doc["resource"] = new_resource_uid
+                if old_resource_uid in resources:
+                    new_resource_uid = resources[old_resource_uid]
+                    new_doc["resource"] = new_resource_uid
+                else:
+                    logger.info(f"Resource {old_resource_uid} not found in resources, will not remap datum_id")
                 # Some existing code in other libraries looks for the
                 # {resource_uid}/{integer} pattern in Event documents and uses that
                 # to take a fast path. The changes to Datum proposed in
